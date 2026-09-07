@@ -140,7 +140,7 @@ begin
    end;
 
    -- TEST 9 — Exception Handling: Identical Primes
-   Put_Line ("TEST 9 — Exception Handling: Identical Primes");
+   Put_Line ("TEST 10 — Exception Handling: Identical Primes");
    declare
       Pub  : Public_Key;
       Priv : Private_Key;
