@@ -152,24 +152,33 @@ package body Asymmetric_Key is
      (M   : Message_Type;
       Pub : Public_Key) return Message_Type
    is
+      B : constant Long_Long_Integer := Long_Long_Integer (M mod Pub.N);
+      E : constant Long_Long_Integer := Long_Long_Integer (Pub.E);
+      Mval : constant Long_Long_Integer := Long_Long_Integer (Pub.N);
    begin
-      return Message_Type (Mod_Pow (Key_Component (M), Pub.E, Pub.N));
+      return Message_Type (Mod_Pow (Key_Component (B), Key_Component (E), Key_Component (Mval)));
    end Encrypt;
 
    function Decrypt
      (C    : Message_Type;
       Priv : Private_Key) return Message_Type
    is
+      B : constant Long_Long_Integer := Long_Long_Integer (C mod Priv.N);
+      D : constant Long_Long_Integer := Long_Long_Integer (Priv.D);
+      Mval : constant Long_Long_Integer := Long_Long_Integer (Priv.N);
    begin
-      return Message_Type (Mod_Pow (Key_Component (C), Priv.D, Priv.N));
+      return Message_Type (Mod_Pow (Key_Component (B), Key_Component (D), Key_Component (Mval)));
    end Decrypt;
 
    function Sign
      (M    : Message_Type;
       Priv : Private_Key) return Message_Type
    is
+      B : constant Long_Long_Integer := Long_Long_Integer (M mod Priv.N);
+      D : constant Long_Long_Integer := Long_Long_Integer (Priv.D);
+      Mval : constant Long_Long_Integer := Long_Long_Integer (Priv.N);
    begin
-      return Message_Type (Mod_Pow (Key_Component (M), Priv.D, Priv.N));
+      return Message_Type (Mod_Pow (Key_Component (B), Key_Component (D), Key_Component (Mval)));
    end Sign;
 
    function Verify
@@ -177,10 +186,13 @@ package body Asymmetric_Key is
       S   : Message_Type;
       Pub : Public_Key) return Boolean
    is
+      Sval : constant Long_Long_Integer := Long_Long_Integer (S mod Pub.N);
+      E : constant Long_Long_Integer := Long_Long_Integer (Pub.E);
+      Mval : constant Long_Long_Integer := Long_Long_Integer (Pub.N);
       Decrypted_Signature : constant Message_Type :=
-        Message_Type (Mod_Pow (Key_Component (S), Pub.E, Pub.N));
+        Message_Type (Mod_Pow (Key_Component (Sval), Key_Component (E), Key_Component (Mval)));
    begin
-      return Decrypted_Signature = M;
+      return Decrypted_Signature = (M mod Pub.N);
    end Verify;
 
 end Asymmetric_Key;
