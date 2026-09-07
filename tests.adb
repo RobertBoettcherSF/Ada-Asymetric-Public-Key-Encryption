@@ -49,7 +49,9 @@ begin
       Dec := Decrypt (Enc, Priv);
       Check ("3.1 Ciphertext differs from plaintext", Enc /= Orig);
       Check ("3.2 Decrypted text matches original", Dec = Orig);
+      pragma Warnings (Off, "condition can only be");
       Check ("3.3 Ciphertext is within modulus bounds", Enc < Message_Type (Pub.N));
+      pragma Warnings (On, "condition can only be");
    end;
 
    -- TEST 4 — Medium Message Roundtrip
@@ -81,7 +83,9 @@ begin
       Sig := Sign (Msg, Priv);
       Check ("5.1 Signature generated", Sig > 0);
       Check ("5.2 Valid signature verifies successfully", Verify (Msg, Sig, Pub));
+      pragma Warnings (Off, "condition can only be");
       Check ("5.3 Signature is within modulus bounds", Sig < Message_Type (Pub.N));
+      pragma Warnings (On, "condition can only be");
    end;
 
    -- TEST 6 — Signature Verification Failure on Tampered Message
@@ -213,7 +217,9 @@ begin
    begin
       Generate_Keys (17, 19, Pub, Priv);
       Check ("13.1 Modulus correctly calculated as 323", Pub.N = 323);
+      pragma Warnings (Off, "condition can only be");
       Check ("13.2 Small prime encryption works", Encrypt (Msg, Pub) < 323);
+      pragma Warnings (On, "condition can only be");
       Check ("13.3 Small prime roundtrip succeeds", Decrypt (Encrypt (Msg, Pub), Priv) = Msg);
    end;
 
