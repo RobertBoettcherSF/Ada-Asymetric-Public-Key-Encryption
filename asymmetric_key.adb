@@ -152,33 +152,36 @@ package body Asymmetric_Key is
      (M   : Message_Type;
       Pub : Public_Key) return Message_Type
    is
-      B : constant Long_Long_Integer := Long_Long_Integer (M mod Pub.N);
-      E : constant Long_Long_Integer := Long_Long_Integer (Pub.E);
-      Mval : constant Long_Long_Integer := Long_Long_Integer (Pub.N);
+      M_Rem : constant Long_Long_Integer := Long_Long_Integer (M) mod Long_Long_Integer (Pub.N);
    begin
-      return Message_Type (Mod_Pow (Key_Component (B), Key_Component (E), Key_Component (Mval)));
+      if M_Rem = 0 then
+         return 0;
+      end if;
+      return Message_Type (Mod_Pow (Key_Component (M_Rem), Pub.E, Pub.N));
    end Encrypt;
 
    function Decrypt
      (C    : Message_Type;
       Priv : Private_Key) return Message_Type
    is
-      B : constant Long_Long_Integer := Long_Long_Integer (C mod Priv.N);
-      D : constant Long_Long_Integer := Long_Long_Integer (Priv.D);
-      Mval : constant Long_Long_Integer := Long_Long_Integer (Priv.N);
+      C_Rem : constant Long_Long_Integer := Long_Long_Integer (C) mod Long_Long_Integer (Priv.N);
    begin
-      return Message_Type (Mod_Pow (Key_Component (B), Key_Component (D), Key_Component (Mval)));
+      if C_Rem = 0 then
+         return 0;
+      end if;
+      return Message_Type (Mod_Pow (Key_Component (C_Rem), Priv.D, Priv.N));
    end Decrypt;
 
    function Sign
      (M    : Message_Type;
       Priv : Private_Key) return Message_Type
    is
-      B : constant Long_Long_Integer := Long_Long_Integer (M mod Priv.N);
-      D : constant Long_Long_Integer := Long_Long_Integer (Priv.D);
-      Mval : constant Long_Long_Integer := Long_Long_Integer (Priv.N);
+      M_Rem : constant Long_Long_Integer := Long_Long_Integer (M) mod Long_Long_Integer (Priv.N);
    begin
-      return Message_Type (Mod_Pow (Key_Component (B), Key_Component (D), Key_Component (Mval)));
+      if M_Rem = 0 then
+         return 0;
+      end if;
+      return Message_Type (Mod_Pow (Key_Component (M_Rem), Priv.D, Priv.N));
    end Sign;
 
    function Verify
@@ -186,13 +189,16 @@ package body Asymmetric_Key is
       S   : Message_Type;
       Pub : Public_Key) return Boolean
    is
-      Sval : constant Long_Long_Integer := Long_Long_Integer (S mod Pub.N);
-      E : constant Long_Long_Integer := Long_Long_Integer (Pub.E);
-      Mval : constant Long_Long_Integer := Long_Long_Integer (Pub.N);
-      Decrypted_Signature : constant Message_Type :=
-        Message_Type (Mod_Pow (Key_Component (Sval), Key_Component (E), Key_Component (Mval)));
+      S_Rem : constant Long_Long_Integer := Long_Long_Integer (S) mod Long_Long_Integer (Pub.N);
+      M_Rem : constant Long_Long_Integer := Long_Long_Integer (M) mod Long_Long_Integer (Pub.N);
+      Decrypted_Signature : Message_Type;
    begin
-      return Decrypted_Signature = (M mod Pub.N);
+      if S_Rem = 0 then
+         Decrypted_Signature := 0;
+      else
+         Decrypted_Signature := Message_Type (Mod_Pow (Key_Component (S_Rem), Pub.E, Pub.N));
+      end if;
+      return Decrypted_Signature = Message_Type (M_Rem);
    end Verify;
 
 end Asymmetric_Key;
