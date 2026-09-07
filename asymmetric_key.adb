@@ -3,7 +3,7 @@ package body Asymmetric_Key is
    function Is_Prime (Value : Prime_Value) return Boolean is
    begin
       if Value <= 3 then
-         return Value >= 2;
+         return True;
       end if;
       if Value mod 2 = 0 or else Value mod 3 = 0 then
          return False;
@@ -23,16 +23,19 @@ package body Asymmetric_Key is
    end Is_Prime;
 
    function Gcd (A, B : Key_Component) return Key_Component is
-      Curr_A : Key_Component := A;
-      Curr_B : Key_Component := B;
-      Temp   : Key_Component;
+      type Extended_Component is range 0 .. 2147483647;
+      Curr_A : Extended_Component := Extended_Component (A);
+      Curr_B : Extended_Component := Extended_Component (B);
+      Temp   : Extended_Component;
    begin
+      pragma Warnings (Off, "-gnatwc");
       while Curr_B /= 0 loop
          Temp := Curr_B;
          Curr_B := Curr_A mod Curr_B;
          Curr_A := Temp;
       end loop;
-      return Curr_A;
+      pragma Warnings (On, "-gnatwc");
+      return Key_Component (Curr_A);
    end Gcd;
 
    function Mod_Pow (Base, Exp, Modulus : Key_Component) return Key_Component is
