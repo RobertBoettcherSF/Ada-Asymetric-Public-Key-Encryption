@@ -32,7 +32,9 @@ begin
       Generate_Keys (61, 53, Pub, Priv);
       Check ("2.1 N is product of primes (3233)", Pub.N = 3233);
       Check ("2.2 Private N matches Public N", Priv.N = Pub.N);
+      pragma Warnings (Off, "-gnatwc");
       Check ("2.3 Public exponent E is non-zero", Pub.E > 0);
+      pragma Warnings (On, "-gnatwc");
    end;
 
    -- TEST 3 — Basic Encryption and Decryption Roundtrip
