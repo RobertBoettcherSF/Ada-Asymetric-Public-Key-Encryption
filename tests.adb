@@ -225,6 +225,6 @@ begin
 
    Put_Line ("");
    Put_Line ("=== " & Natural'Image (Pass_Count) & " passed, "
-            & Natural_Image (Fail_Count) & " failed ===");
+            & Natural'Image (Fail_Count) & " failed ===");
    pragma Assert (Fail_Count = 0, "Some tests failed");
 end Tests;
