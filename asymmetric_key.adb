@@ -51,9 +51,11 @@ package body Asymmetric_Key is
       return Key_Component (Res);
    end Mod_Pow;
 
-   function Extended_Gcd (A, B : Long_Long_Integer) return record
-         Gcd, X, Y : Long_Long_Integer;
-      end record is
+   type Extended_Gcd_Result is record
+      Gcd, X, Y : Long_Long_Integer;
+   end record;
+
+   function Extended_Gcd (A, B : Long_Long_Integer) return Extended_Gcd_Result is
       Old_R : Long_Long_Integer := A;
       R     : Long_Long_Integer := B;
       Old_S : Long_Long_Integer := 1;
@@ -82,9 +84,7 @@ package body Asymmetric_Key is
    end Extended_Gcd;
 
    function Mod_Inverse (E, Phi : Key_Component) return Key_Component is
-      Res : constant record
-         Gcd, X, Y : Long_Long_Integer;
-      end record := Extended_Gcd (Long_Long_Integer (E), Long_Long_Integer (Phi));
+      Res : constant Extended_Gcd_Result := Extended_Gcd (Long_Long_Integer (E), Long_Long_Integer (Phi));
       Result : Long_Long_Integer;
    begin
       if Res.Gcd /= 1 then
